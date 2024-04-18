@@ -20,7 +20,7 @@ return [
         ],
 
         "admin" => [
-            "id" => 2,
+            "id" => 1,
             "name" => "John"
         ]
     ]

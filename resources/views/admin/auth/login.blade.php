@@ -1,31 +1,34 @@
-@extends('layouts.app')
-
-@section('js')
-{!! NoCaptcha::renderJs() !!}
-@endsection
+@extends('admin.layouts.app')
 
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+                <div class="card-header">Admin login</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
+                    <form method="POST" action="{{ route('admin.dashboard.check') }}">
                         @csrf
 
                         <div class="row mb-3">
-                            <label for="userLogin" class="col-md-4 col-form-label text-md-end">email/phone/name</label>
+                            <label for="email" class="col-md-4 col-form-label text-md-end">Email address</label>
 
                             <div class="col-md-6">
-                                <input id="userLogin" type="text" class="form-control @error('userLogin') is-invalid @enderror" name="userLogin" value="{{ old('userLogin') }}" required autocomplete="userLogin" autofocus>
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
 
-                                @error('userLogin')
+                                @error('email')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+
+                                @if($errors->has('errorResponse'))
+                                    <span class="text-danger">
+                                        <strong>{{ $errors->first('errorResponse') }}</strong>
+                                    </span>
+                                @endif
+
                             </div>
                         </div>
 
@@ -41,17 +44,6 @@
                                     </span>
                                 @enderror
                             </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                {!! NoCaptcha::display() !!}
-                            </div>
-                            @if ($errors->has('g-recaptcha-response'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
-                                </span>
-                            @endif
                         </div>
 
                         <div class="row mb-3">

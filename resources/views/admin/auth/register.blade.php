@@ -1,14 +1,20 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
+                <div class="card-header">Admin register</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
+                    @if(session('errorResponse'))
+                        <div class="alert alert-danger">
+                            <strong>{{session('errorResponse')}}</strong>
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('admin.dashboard.store') }}">
                         @csrf
 
                         <div class="row mb-3">
@@ -26,12 +32,12 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="phone" class="col-md-4 col-form-label text-md-end">Phone</label>
+                            <label for="admin_key" class="col-md-4 col-form-label text-md-end">Admin key</label>
 
                             <div class="col-md-6">
-                                <input id="phone" type="number" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required autocomplete="phone" autofocus>
+                                <input id="admin_key" type="text" class="form-control @error('admin_key') is-invalid @enderror" name="admin_key" value="{{ old('admin_key') }}" required autocomplete="admin_key" autofocus>
 
-                                @error('phone')
+                                @error('admin_key')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
