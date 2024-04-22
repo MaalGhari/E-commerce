@@ -20,4 +20,22 @@ class Product extends Model
        'stock',
        'category_id',
     ];
+
+    public function users()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // public function categories(){
+    //     return $this->belongsTo(Category::class, 'category_id');
+    // }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function products(){
+        return $this->hasMany(Product::class);
+    }
 }

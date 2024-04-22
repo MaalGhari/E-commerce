@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\auth;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use Illuminate\Http\Request;
-use Hash;
+use Illuminate\Support\Facades\Hash;
 
 class AdminRegisterController extends Controller
 {

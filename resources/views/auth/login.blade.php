@@ -12,6 +12,13 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
+
+                    {{-- @if(session('message'))
+                        <div class="alert alert-info">
+                            {{ session('message') }}
+                        </div>
+                    @endif --}}
+
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
@@ -44,17 +51,6 @@
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col-md-6">
-                                {!! NoCaptcha::display() !!}
-                            </div>
-                            @if ($errors->has('g-recaptcha-response'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-
-                        <div class="row mb-3">
                             <div class="col-md-6 offset-md-4">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
@@ -66,8 +62,19 @@
                             </div>
                         </div>
 
+                        <div class="row mb-3">
+                            <div class="col-md-6 offset-md-3">
+                                {!! NoCaptcha::display() !!}
+                            </div>
+                            @if ($errors->has('g-recaptcha-response'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+
                         <div class="row mb-0">
-                            <div class="col-md-8 offset-md-4">
+                            <div class="col-md-8 offset-md-3">
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Login') }}
                                 </button>

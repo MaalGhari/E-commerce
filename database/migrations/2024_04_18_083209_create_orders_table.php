@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->decimal('total', 10, 2);
             $table->string('status');
-            $table->dateTime('order_date');
+            $table->integer('quantity');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
