@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 
@@ -46,4 +48,14 @@ class AdminProfileController extends Controller
 
     //     return redirect()->route('admin.dashboard.home')->with('success', 'Your profile has been deleted.');
     // }
+
+    public function getUserStatistics()
+    {
+        $totalUsers = User::count(); 
+
+        return [
+            'totalUsers' => $totalUsers,
+        ];
+    }
+
 }

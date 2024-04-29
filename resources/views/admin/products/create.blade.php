@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -13,11 +13,27 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-    {{-- <s src="https://cdn.tailwindcss.com"></script> --}}
-
 
     <!-- Scripts -->
+    @yield('js')
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> --}}
+    {{-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> --}}
+    <style>
+        /* Style the input field */
+        #myInput {
+            padding: 20px;
+            margin-top: -6px;
+            border: 0;
+            border-radius: 0;
+            background: #f1f1f1;
+        }
+        .text-orange {
+        color: rgb(212, 47, 5);
+        }
+    </style>
 </head>
 
 <body>
@@ -100,128 +116,81 @@
             </div>
         </nav>
     </div>
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="display-4">List Users</h1>
-        </div>
-    
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <!-- Main modal -->
+    <div class="d-flex align-items-center justify-content-center min-vh-100">
+
+        <div class="p-4 w-100 max-w-md">
+            <!-- Modal content -->
+            <div class="bg-white rounded-lg shadow bg-light">
+                <!-- Modal header -->
+                <div class="d-flex align-items-center justify-content-between p-4 border-bottom rounded-top border-dark">
+                    <h1 class="text-2xl font-semibold">
+                        <span class="text-muted">
+                            Create
+                        </span>
+                        <span class="text-orange">Products</span>
+                    </h1>
+                </div>
+                <form class="p-4 bg-light" action="{{route('admin.dashboard.admin.products.store')}}" method="POST">
+                    @csrf
+                    <div class="row g-4 mb-4">
+                        <div class="col-12">
+                            <label for="" class="form-label mb-2">Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="" required="">
+                        </div>
+                        <div class="col-12">
+                            <label for="image" class="form-label mb-2">Image</label>
+                            <input type="file" class="form-control" accept="image/*" name="image" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="" class="form-label mb-2">Brand</label>
+                            <input type="text" name="brand" class="form-control" placeholder="" required="">
+                        </div>
+                        <div class="col-12">
+                            <label for="description" class="form-label mb-2">Description</label>
+                            <textarea name="description" id="description" class="form-control" rows="5" placeholder="Description" required=""></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label for="" class="form-label mb-2">Size</label>
+                            <input type="text" name="size" class="form-control" placeholder="" required="">
+                        </div>
+                        <div class="col-12">
+                            <label for="" class="form-label mb-2">Color</label>
+                            <input type="text" name="color" class="form-control" placeholder="" required="">
+                        </div>
+                        <div class="col-12">
+                            <label for="" class="form-label mb-2">Price</label>
+                            <input type="number" name="price" class="form-control" placeholder="" required="">
+                        </div>
+                        <div class="col-12">
+                            <label for="" class="form-label mb-2">Stock</label>
+                            <input type="number" name="stock" class="form-control" placeholder="" required="">
+                        </div>
+                        <div class="col-12">
+                            <label for="" class="form-label mb-2">Category ID</label>
+                            <select class="form-control" id="category" name="category_id" required="">
+                                <option value="" disabled selected>Chaose a category</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" name="createCategories" class="btn btn-primary w-100">
+                        Create
+                    </button>
+                </form>
             </div>
-        @endif
-    
-        <div class="d-flex align-items-center bg-light-blue text-white py-2 px-3 rounded mb-4">
-            <h2 class="h6 m-0">Users</h2>
         </div>
-    
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>#Id</th>
-                    <th>Name</th>
-                    <th>E-mail Address</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($users as $user)
-                    <tr>
-                        <td>{{ $user->id }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>
-                            @if ($user->deleted_at)
-                                <form action="{{ route('admin.dashboard.users.enable', $user->id) }}" method="post">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="btn btn-success btn-light-green">Enable</button>
-                                </form>
-                            @else
-                                <form action="{{ route('admin.dashboard.users.disable', $user->id) }}" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-light-red">Disable</button>
-                                </form>
-                            @endif
-                        </td>
-                    </tr>
-                @endforeach
-                @if ($users->isEmpty())
-                    <tr>
-                        <td colspan="4" class="text-center">No users to show</td>
-                    </tr>
-                @endif
-            </tbody>
-        </table>
-    
-        <div class="d-flex align-items-center bg-light-yellow text-white py-2 px-3 rounded mb-4">
-            <h2 class="h6 m-0">Admins</h2>
-        </div>        
-    
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>#Id</th>
-                    <th>Name</th>
-                    <th>E-mail Address</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($admins as $admin)
-                    <tr>
-                        <td>{{ $admin->id }}</td>
-                        <td>{{ $admin->name }}</td>
-                        <td>{{ $admin->email }}</td>
-                        <td>
-                            @if ($admin->deleted_at)
-                                <form action="{{ route('admin.dashboard.admins.enable', $admin->id) }}" method="post">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="btn btn-success btn-light-green">Enable</button>
-                                </form>
-                            @else
-                                <form action="{{ route('admin.dashboard.admins.disable', $admin->id) }}" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-light-red">Disable</button>
-                                </form>
-                            @endif
-                        </td>
-                    </tr>
-                @endforeach
-                {{-- @if ($admins->isEmpty())
-                    <tr>
-                        <td colspan="4" class="text-center">No admins to show</td>
-                    </tr>
-                @endif --}}
-            </tbody>
-        </table>
     </div>
     
-    
-<style>
-    .btn-light-green {
-    background-color: #d4edda; /* Light green color */
-    color: #155724; /* Dark green text color */
-   }
-
-   .btn-light-red {
-    background-color: #f8d7da; /* Light red color */
-    color: #721c24; /* Dark red text color */
-    }
-
-    .bg-light-blue {
-    background-color: #85baf4; /* Light blue color */
-    }
-
-    .bg-light-yellow {
-    background-color: #e9cf79; /* Light yellow color */
-    }
-</style>
+</div>
 
 </body>
-
 </html>
+<br>
+<br>
+<br>
+<footer>
+    @include('partials.footer')
+</footer>

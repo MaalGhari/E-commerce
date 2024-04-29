@@ -13,22 +13,14 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/cards/card-1/assets/css/card-1.css">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/charts/chart-4/assets/css/chart-4.css">
 
     <!-- Scripts -->
     @yield('js')
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script src="https://unpkg.com/bs-brain@2.0.3/components/charts/chart-4/assets/controller/chart-4.js"></script>
-
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> --}}
+    {{-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> --}}
     <style>
         /* Style the input field */
         #myInput {
@@ -37,6 +29,9 @@
             border: 0;
             border-radius: 0;
             background: #f1f1f1;
+        }
+        .text-orange {
+        color: rgb(212, 47, 5);
         }
     </style>
 </head>
@@ -75,10 +70,17 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ route('user.profile') }}">Home</a>
+                            <a class="nav-link active" aria-current="page"
+                                href="{{ route('admin.dashboard.home') }}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('user.products.index') }}">Products</a>
+                            <a class="nav-link" href="{{ route('admin.dashboard.admin.products.index') }}">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.dashboard.categories.index') }}">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.dashboard.promotions.index') }}">Promotions</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
@@ -86,12 +88,16 @@
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
+                                {{ Auth::guard('admin')->user()->name }}
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('users.edit-profile') }}">
+                                <a class="dropdown-item" href="{{ route('admin.dashboard.users.edit-profile') }}">
                                     My Profile
+                                </a>
+
+                                <a class="dropdown-item" href="{{ route('admin.dashboard.users.list') }}">
+                                    List Users
                                 </a>
 
                                 <a class="dropdown-item" href="{{ route('logout') }}"
@@ -110,27 +116,48 @@
             </div>
         </nav>
     </div>
+    <!-- Main modal -->
+    <div class="d-flex align-items-center justify-content-center min-vh-100">
 
-    <div class="container">
-      <div class="row justify-content-center">
-          <div class="col-md-8">
-              <div class="card mt-5">    
-                  <div class="card-body">
-                      @if (session('status'))
-                          <div class="alert alert-success" role="alert">
-                              {{ session('status') }}
-                          </div>
-                      @endif
-
-                      {{ __('You are logged in!') }}
-                  </div>
-              </div>
-          </div>
-      </div>
+        <div class="p-4 w-100 max-w-md">
+            <!-- Modal content -->
+            <div class="bg-white rounded-lg shadow bg-light">
+                <!-- Modal header -->
+                <div class="d-flex align-items-center justify-content-between p-4 border-bottom rounded-top border-dark">
+                    <h1 class="text-2xl font-semibold">
+                        <span class="text-muted">
+                            Create
+                        </span>
+                        <span class="text-orange">Categories</span>
+                    </h1>
+                </div>
+                <form class="p-4 bg-light" action="{{route('admin.dashboard.categories.store')}}" method="POST">
+                    @csrf
+                    <div class="row g-4 mb-4">
+                        <div class="col-12">
+                            <label for="" class="form-label mb-2">Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="" required="">
+                        </div>
+                        <div class="col-12">
+                            <label for="description" class="form-label mb-2">Description</label>
+                            <textarea name="description" id="description" class="form-control" rows="5" placeholder="Description" required></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" name="createCategories" class="btn btn-primary w-100">
+                        Create
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
-    <br>
-    <br>
-    <br>
-    <footer>
-        @include('partials.footer')
-    </footer>
+    
+</div>
+
+</body>
+</html>
+<br>
+<br>
+<br>
+<footer>
+    @include('partials.footer')
+</footer>

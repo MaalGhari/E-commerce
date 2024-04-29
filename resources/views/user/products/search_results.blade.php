@@ -30,6 +30,11 @@
             border-radius: 0;
             background: #f1f1f1;
         }
+
+        .custom-margin-right {
+            margin-right: 20px;
+        }
+        
     </style>
 </head>
 
@@ -64,7 +69,7 @@
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
+                {{-- <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="{{ route('user.profile') }}">Home</a>
@@ -101,16 +106,84 @@
                             </div>
                         </li>
                     </ul>
-                </div>
+                </div> --}}
+                @if(Auth::check())
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="{{ route('user.profile') }}">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('user.products.index') }}">Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    {{ Auth::user()->name }}
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('users.edit-profile') }}">
+                                        My Profile
+                                    </a>
+
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault();
+                                        document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                    </a>
+
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>  
+                @else
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav"> 
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('welcome') }}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                            </li>
+                        </ul>
+                        @if (Route::has('login'))
+                            @auth
+                                <ul class="navbar-nav mr-auto mb-4"> 
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ url('/home') }}">Home</a>
+                                    </li>
+                                </ul>
+                                @else
+                                <ul class="navbar-nav jus mt-3"> 
+                                    <li class="nav-item">
+                                        <a class="nav-link btn btn-primary px-4 py-2 custom-margin-right" href="{{ route('login') }}">Login</a>
+                                    </li>
+                                    @if (Route::has('register'))
+                                        <li class="nav-item">
+                                            <a class="nav-link btn btn-success px-4 py-2" href="{{ route('register') }}">Register</a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            @endauth
+                        @endif
+                    </div>
+                @endif
             </div>
         </nav>
     </div>
 
     <div class="container">
-        <h1>Résultats de la recherche</h1>
+        <h1>Search results</h1>
 
         @if ($products->isEmpty())
-            <p>Aucun résultat trouvé pour cette recherche.</p>
+            <p>No results found for this search.</p>
         @else
             <div class="row">
                 @foreach($products as $product)
@@ -131,8 +204,34 @@
             </div>
         @endif
 
-        <footer>
-            @include('partials.footer')
-        </footer>
-        
+        <div class="d-flex justify-content-center">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination pagination-sm">
+                    @if ($products->onFirstPage())
+                        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    @else
+                        <li class="page-item"><a class="page-link" href="{{ $products->previousPageUrl() }}">Previous</a></li>
+                    @endif
+            
+                    @foreach ($products as $page)
+                        @if ($page->url)
+                            <li class="page-item {{ $page->isActive ? 'active' : '' }}"><a class="page-link" href="{{ $page->url }}">{{ $page->label }}</a></li>
+                        @endif
+                    @endforeach
+            
+                    @if ($products->hasMorePages())
+                        <li class="page-item"><a class="page-link" href="{{ $products->nextPageUrl() }}">Next</a></li>
+                    @else
+                        <li class="page-item disabled"><span class="page-link">Next</span></li>
+                    @endif
+                </ul>
+            </nav>
+        </div>
+
     </div>
+    <br>
+    <br>
+    <br>    
+    <footer>
+        @include('partials.footer')
+    </footer>

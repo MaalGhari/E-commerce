@@ -13,11 +13,6 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/cards/card-1/assets/css/card-1.css">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/charts/chart-4/assets/css/chart-4.css">
 
     <!-- Scripts -->
     @yield('js')
@@ -26,9 +21,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script src="https://unpkg.com/bs-brain@2.0.3/components/charts/chart-4/assets/controller/chart-4.js"></script>
-
     <style>
         /* Style the input field */
         #myInput {
@@ -37,6 +29,23 @@
             border: 0;
             border-radius: 0;
             background: #f1f1f1;
+        }
+
+        .custom-card-title {
+            font-size: 1em;
+            font-weight: bold;
+            color: rgb(223, 182, 16); 
+            text-transform: uppercase; 
+        }
+
+        .btn-light-blue {
+            background-color: #a9bdec; 
+            color: #192ea9; 
+        }
+
+        .btn-light-red {
+            background-color: #f8d7da; 
+            color: #721c24; 
         }
     </style>
 </head>
@@ -75,10 +84,17 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ route('user.profile') }}">Home</a>
+                            <a class="nav-link active" aria-current="page"
+                                href="{{ route('admin.dashboard.home') }}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('user.products.index') }}">Products</a>
+                            <a class="nav-link" href="{{ route('admin.dashboard.admin.products.index') }}">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.dashboard.categories.index') }}">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.dashboard.promotions.index') }}">Promotions</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
@@ -86,12 +102,16 @@
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
+                                {{ Auth::guard('admin')->user()->name }}
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('users.edit-profile') }}">
+                                <a class="dropdown-item" href="{{ route('admin.dashboard.users.edit-profile') }}">
                                     My Profile
+                                </a>
+
+                                <a class="dropdown-item" href="{{ route('admin.dashboard.users.list') }}">
+                                    List Users
                                 </a>
 
                                 <a class="dropdown-item" href="{{ route('logout') }}"
@@ -111,26 +131,46 @@
         </nav>
     </div>
 
-    <div class="container">
-      <div class="row justify-content-center">
-          <div class="col-md-8">
-              <div class="card mt-5">    
-                  <div class="card-body">
-                      @if (session('status'))
-                          <div class="alert alert-success" role="alert">
-                              {{ session('status') }}
-                          </div>
-                      @endif
-
-                      {{ __('You are logged in!') }}
-                  </div>
-              </div>
-          </div>
-      </div>
+    <div class="text-center mt-5">
+        <a href="{{ route('admin.dashboard.categories.create') }}" class="btn btn-warning">
+            <svg viewBox="0 0 24 24" width="30px" height="30px" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M3.75 4.5L4.5 3.75H10.5L11.25 4.5V10.5L10.5 11.25H4.5L3.75 10.5V4.5ZM5.25 5.25V9.75H9.75V5.25H5.25ZM13.5 3.75L12.75 4.5V10.5L13.5 11.25H19.5L20.25 10.5V4.5L19.5 3.75H13.5ZM14.25 9.75V5.25H18.75V9.75H14.25ZM17.25 20.25H15.75V17.25H12.75V15.75H15.75V12.75H17.25V15.75H20.25V17.25H17.25V20.25ZM4.5 12.75L3.75 13.5V19.5L4.5 20.25H10.5L11.25 19.5V13.5L10.5 12.75H4.5ZM5.25 18.75V14.25H9.75V18.75H5.25Z"/>
+            </svg>
+            Add categories
+        </a>
     </div>
-    <br>
-    <br>
-    <br>
-    <footer>
-        @include('partials.footer')
-    </footer>
+    
+    <div class="row mt-5">
+        @foreach($categories as $category)
+            <div class="col-md-6">
+                <div class="card mb-4 text-center">
+                    <div class="card-header">
+                        <span class="font-bold" style="font-size: 1.2em;">Category n°: </span><span style="color: #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }}">{{ $category->id }}</span>
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title custom-card-title">{{ $category->name }}</h5>
+                        <p class="card-text">{{ $category->description }}</p>
+                    </div>
+                    <div class="text-muted text-center">
+                        {{ $category->updated_at->diffForHumans() }}
+                    </div>
+                    <div class="card-footer text-center">
+                        <form action="{{ route('admin.dashboard.categories.edit', $category->id) }}" method="POST" style="display: inline-block;">
+                            @csrf
+                            @method('GET')
+                            <button type="submit" class="btn btn-primary btn-light-blue">Edit</button>
+                        </form>
+                        <form action="{{ route('admin.dashboard.categories.delete', $category->id) }}" method="POST" style="display: inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-light-red">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+    
+    
+</body>
+</html>

@@ -60,11 +60,25 @@ class UserProductController extends Controller
         // Exécuter la recherche dans la base de données
         $products = Product::where('name', 'like', '%'.$query.'%')
                            ->orWhere('description', 'like', '%'.$query.'%')
-                           ->get();
+                           ->paginate(10);
 
         // Retourner les résultats à la vue appropriée
         return view('user.products.search_results', ['products' => $products]);
     }
+
+    // public function filter(Request $request)
+    // {
+    //     $query = $request->input('query');
+    //     $categoryId = $request->input('category');
+
+    //     $products = Product::where('name', 'like', '%' . $query . '%')
+    //         ->when($categoryId, function ($query) use ($categoryId) {
+    //             return $query->where('category_id', $categoryId);
+    //         })
+    //         ->get();
+
+    //     return view('user.products.search_results', compact('products'));
+    // }
 
     public function filter(Request $request)
     {
@@ -75,10 +89,11 @@ class UserProductController extends Controller
             ->when($categoryId, function ($query) use ($categoryId) {
                 return $query->where('category_id', $categoryId);
             })
-            ->get();
+            ->paginate(10); 
 
-        return view('user.products.search_results', compact('products'));
+        $categories = Category::all();
+
+        return view('user.products.index', compact('products', 'categories'));
     }
-
 
 }

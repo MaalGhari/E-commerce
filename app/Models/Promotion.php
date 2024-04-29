@@ -17,4 +17,8 @@ class Promotion extends Model
         'start_date',
         'end_date',
     ];
+
+    public function product(){
+        return $this->belongsTo(Product::class);
+    }
 }

@@ -13,11 +13,6 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/cards/card-1/assets/css/card-1.css">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/charts/chart-4/assets/css/chart-4.css">
 
     <!-- Scripts -->
     @yield('js')
@@ -26,9 +21,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script src="https://unpkg.com/bs-brain@2.0.3/components/charts/chart-4/assets/controller/chart-4.js"></script>
-
     <style>
         /* Style the input field */
         #myInput {
@@ -38,6 +30,17 @@
             border-radius: 0;
             background: #f1f1f1;
         }
+
+        .btn-light-blue {
+            background-color: #a9bdec; 
+            color: #192ea9; 
+        }
+
+        .btn-light-red {
+            background-color: #f8d7da; 
+            color: #721c24; 
+        }
+
     </style>
 </head>
 
@@ -75,10 +78,17 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ route('user.profile') }}">Home</a>
+                            <a class="nav-link active" aria-current="page"
+                                href="{{ route('admin.dashboard.home') }}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('user.products.index') }}">Products</a>
+                            <a class="nav-link" href="{{ route('admin.dashboard.admin.products.index') }}">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.dashboard.categories.index') }}">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.dashboard.promotions.index') }}">Promotions</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
@@ -86,12 +96,16 @@
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
+                                {{ Auth::guard('admin')->user()->name }}
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('users.edit-profile') }}">
+                                <a class="dropdown-item" href="{{ route('admin.dashboard.users.edit-profile') }}">
                                     My Profile
+                                </a>
+
+                                <a class="dropdown-item" href="{{ route('admin.dashboard.users.list') }}">
+                                    List Users
                                 </a>
 
                                 <a class="dropdown-item" href="{{ route('logout') }}"
@@ -112,25 +126,50 @@
     </div>
 
     <div class="container">
-      <div class="row justify-content-center">
-          <div class="col-md-8">
-              <div class="card mt-5">    
-                  <div class="card-body">
-                      @if (session('status'))
-                          <div class="alert alert-success" role="alert">
-                              {{ session('status') }}
-                          </div>
-                      @endif
-
-                      {{ __('You are logged in!') }}
-                  </div>
-              </div>
-          </div>
-      </div>
-    </div>
-    <br>
-    <br>
-    <br>
-    <footer>
-        @include('partials.footer')
-    </footer>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">Create Promotion</div>
+    
+                    <div class="card-body">
+                        <form method="POST" action="{{ route('admin.dashboard.promotions.store') }}">
+                            @csrf
+    
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" id="name" class="form-control" required>
+                            </div>
+    
+                            <div class="form-group">
+                                <label for="product_id">Product ID</label>
+                                <input type="text" name="product_id" id="product_id" class="form-control" required>
+                            </div>
+    
+                            <div class="form-group">
+                                <label for="reduced_price">Reduced Price</label>
+                                <input type="text" name="reduced_price" id="reduced_price" class="form-control" required>
+                            </div>
+    
+                            <div class="form-group">
+                                <label for="percentage_reduction">Percentage Reduction</label>
+                                <input type="text" name="percentage_reduction" id="percentage_reduction" class="form-control" required>
+                            </div>
+    
+                            <div class="form-group">
+                                <label for="start_date">Start Date</label>
+                                <input type="date" name="start_date" id="start_date" class="form-control" required>
+                            </div>
+    
+                            <div class="form-group">
+                                <label for="end_date">End Date</label>
+                                <input type="date" name="end_date" id="end_date" class="form-control" required>
+                            </div>
+    
+                            <button type="submit" class="btn btn-primary">Create Promotion</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>         
+        

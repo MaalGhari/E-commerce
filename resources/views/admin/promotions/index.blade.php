@@ -13,11 +13,6 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/cards/card-1/assets/css/card-1.css">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/charts/chart-4/assets/css/chart-4.css">
 
     <!-- Scripts -->
     @yield('js')
@@ -26,9 +21,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script src="https://unpkg.com/bs-brain@2.0.3/components/charts/chart-4/assets/controller/chart-4.js"></script>
-
     <style>
         /* Style the input field */
         #myInput {
@@ -38,6 +30,22 @@
             border-radius: 0;
             background: #f1f1f1;
         }
+
+        .btn-light-green {
+            background-color: #a9ecec; 
+            color: #27ae98; 
+        }
+
+        .btn-light-blue {
+            background-color: #a9bdec; 
+            color: #192ea9; 
+        }
+
+        .btn-light-red {
+            background-color: #f8d7da; 
+            color: #721c24; 
+        }
+
     </style>
 </head>
 
@@ -75,10 +83,17 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ route('user.profile') }}">Home</a>
+                            <a class="nav-link active" aria-current="page"
+                                href="{{ route('admin.dashboard.home') }}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('user.products.index') }}">Products</a>
+                            <a class="nav-link" href="{{ route('admin.dashboard.admin.products.index') }}">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.dashboard.categories.index') }}">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.dashboard.promotions.index') }}">Promotions</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
@@ -86,12 +101,16 @@
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
+                                {{ Auth::guard('admin')->user()->name }}
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('users.edit-profile') }}">
+                                <a class="dropdown-item" href="{{ route('admin.dashboard.users.edit-profile') }}">
                                     My Profile
+                                </a>
+
+                                <a class="dropdown-item" href="{{ route('admin.dashboard.users.list') }}">
+                                    List Users
                                 </a>
 
                                 <a class="dropdown-item" href="{{ route('logout') }}"
@@ -112,25 +131,52 @@
     </div>
 
     <div class="container">
-      <div class="row justify-content-center">
-          <div class="col-md-8">
-              <div class="card mt-5">    
-                  <div class="card-body">
-                      @if (session('status'))
-                          <div class="alert alert-success" role="alert">
-                              {{ session('status') }}
-                          </div>
-                      @endif
 
-                      {{ __('You are logged in!') }}
-                  </div>
-              </div>
-          </div>
-      </div>
-    </div>
-    <br>
-    <br>
-    <br>
-    <footer>
-        @include('partials.footer')
-    </footer>
+        <div class="mt-5" id="app">    
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+        </div>
+
+        <div class="container mt-5">
+            <h1>List of promotions</h1>
+            <br>
+            <a href="{{ route('admin.dashboard.promotions.create') }}" class="btn btn-primary mb-3">Add Promotions</a>
+            <br>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Reduced Price</th>
+                        <th scope="col">Percentage Reduction</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($promotions as $promotion)
+                    <tr>
+                        <td>{{ $promotion->id }}</td>
+                        <td>{{ $promotion->name }}</td>
+                        <td>{{ $promotion->reduced_price }}</td>
+                        <td>{{ $promotion->percentage_reduction }}%</td>
+                        <td>{{ $promotion->start_date }}</td>
+                        <td>{{ $promotion->end_date }}</td>
+                        <td>
+                            <a href="{{ route('admin.dashboard.promotions.show', ['id' => $promotion->id]) }}" class="btn btn-info btn-light-green">View</a>
+                            <a href="{{ route('admin.dashboard.promotions.edit', ['id' => $promotion->id]) }}" class="btn btn-primary btn-light-blue">Edit</a>
+                            <form action="{{ route('admin.dashboard.promotions.delete', ['id' => $promotion->id]) }}" method="POST" style="display: inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-light-red">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\UserProductController;
+use App\Http\Controllers\WelcomeController;
 // use App\Http\Controllers\User\UsersController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -17,13 +18,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+Route::get('/', [WelcomeController::class, 'welcome'])->name('welcome')->middleware('guest');
 
-Auth::routes(['verify' => true]);
-
-// Route::get('/product/all', [ProductController::class, 'index'])->name('product.all');
 Route::get('/products', [UserProductController::class, 'index'])->name('user.products.index');
 Route::get('/products/{id}', [UserProductController::class, 'details'])->name('user.products.details');
 Route::get('/products/show/{id}', [UserProductController::class, 'show'])->name('user.products.show');
@@ -32,15 +31,16 @@ Route::get('/search', [UserProductController::class, 'search'])->name('user.prod
 Route::get('/filter', [UserProductController::class, 'filter'])->name('user.products.filter');
 
 
+
+Auth::routes(['verify' => true]);
+
+
 Route::middleware('verified')->group(function(){
+    // User profile routes
     Route::get('/user/profile', [ProfileController::class, 'index'])->name('user.profile');
     Route::get('/user/profile/edit', [ProfileController::class, 'editProfile'])->name('users.edit-profile');
     Route::put('/user/profile/update', [ProfileController::class, 'updateProfile'])->name('users.update-profile');
-    // Route pour afficher la page de confirmation de suppression de profil
-    Route::get('/user/profile/delete', function () {
-        return view('user.profile.delete');
-    })->name('users.show-delete-profile');
-
+    
 });
 
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
