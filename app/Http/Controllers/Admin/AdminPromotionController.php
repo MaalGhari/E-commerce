@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PromotionRequest;
+use Illuminate\Support\Facades\Log;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Promotion;
+
 
 
 class AdminPromotionController extends Controller
@@ -20,21 +23,35 @@ class AdminPromotionController extends Controller
    
     public function create()
     {
-        return view('admin.promotions.create');
+        $products = Product::all();
+
+        return view('admin.promotions.create', compact('products'));
     }
 
-    
     public function store(PromotionRequest $request)
     {
-        Promotion::create($request->validated());
-
-        return redirect()->route('admin.dashboard.promotions.index')->with('success', 'Promotion created successfully.');
+        try {
+            $product = Product::findOrFail($request->product_id);
+            $initialPrice = $product->price;
+            $reducedPrice = $initialPrice - ($initialPrice * ($request->percentage_reduction / 100));
+    
+            $validatedData = $request->validated();
+            $validatedData['reduced_price'] = $reducedPrice;
+    
+            Promotion::create($validatedData);
+    
+            return redirect()->route('admin.dashboard.promotions.index')->with('success', 'Promotion created successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error creating promotion: ' . $e->getMessage());
+    
+            return back()->withInput()->with('error', 'Error creating promotion. Please try again.');
+        }
     }
-
     
     public function show($id)
     {
         $promotion = Promotion::findOrFail($id);
+        $product = $promotion->product;
 
         return view('admin.promotions.show', compact('promotion'));
     }

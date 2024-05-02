@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminHomeController;
+use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminProfileController;
 use App\Http\Controllers\Admin\AdminPromotionController;
@@ -65,6 +66,15 @@ Route::prefix('/admin/dashboard/')->name('admin.dashboard.')->group(function(){
             Route::get('/edit/{id}', [AdminPromotionController::class, 'edit'])->name('promotions.edit');
             Route::put('/update/{id}', [AdminPromotionController::class, 'update'])->name('promotions.update');
             Route::delete('/delete/{id}', [AdminPromotionController::class, 'delete'])->name('promotions.delete');
+        });
+
+        Route::prefix('ordres')->name('admin')->group(function () {
+            Route::get('/', [AdminOrderController::class, 'index'])->name('orders.index');
+            Route::get('/create', [AdminOrderController::class, 'create'])->name('orders.create');
+            Route::post('/', [AdminOrderController::class, 'store'])->name('orders.store');
+            Route::get('/{id}/edit', [AdminOrderController::class, 'edit'])->name('orders.edit');
+            Route::put('/{id}', [AdminOrderController::class, 'update'])->name('orders.update');
+            Route::delete('/{id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
         });
 
     });

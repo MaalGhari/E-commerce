@@ -141,16 +141,63 @@
                                     </form>
                                 </div>
                             </li>
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12 col-12">
+                                    <div class="dropdown">
+                     
+                                        <button id="dLabel" type="button" class="btn btn-primary" data-bs-toggle="dropdown">
+                                            <i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge bg-danger">{{ count((array) session('cart')) }}</span>
+                                        </button>
+                         
+                                        <div class="dropdown-menu" aria-labelledby="dLabel">
+                                            <div class="row total-header-section">
+                                                @php $total = 0 @endphp
+                                                @foreach((array) session('cart') as $id => $details)
+                                                    @php $total += $details['price'] * $details['quantity'] @endphp
+                                                @endforeach
+                                                <div class="col-lg-12 col-sm-12 col-12 total-section text-right">
+                                                    <p>Total: <span class="text-success">$ {{ $total }}</span></p>
+                                                </div>
+                                            </div>
+                                            @if(session('cart'))
+                                                @foreach(session('cart') as $id => $details)
+                                                    <div class="row cart-detail">
+                                                        <div class="col-lg-4 col-sm-4 col-4 cart-detail-img">
+                                                            {{-- <img src="{{ asset('images') }}/{{ $details['image'] }}" /> --}}
+                                                            @if(isset($details['image']))
+                                                                <img src="{{ asset('images') }}/{{ $details['image'] }}" />
+                                                            @endif
+                                                        </div>
+                                                        <div class="col-lg-8 col-sm-8 col-8 cart-detail-product">
+                                                            <p>{{ $details['product_name'] }}</p>
+                                                            <span class="price text-success"> ${{ $details['price'] }}</span> <span class="count"> Quantity:{{ $details['quantity'] }}</span>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                            <div class="row">
+                                                <div class="col-lg-12 col-sm-12 col-12 text-center checkout">
+                                                    <a href="{{ route('cart') }}" class="btn btn-primary btn-block">View all</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                         
+                                    </div>
+                                </div>
+                            </div>
                         </ul>
                     </div>  
                 @else
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav"> 
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('welcome') }}">Dashboard</a>
+                                <a class="nav-link" href="{{ route('welcome') }}"><svg viewBox="0 0 24 24" width="20px" height="20px" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15 18H9" stroke="#000000" stroke-width="1.5" stroke-linecap="round"></path> <path d="M21.6359 12.9579L21.3572 14.8952C20.8697 18.2827 20.626 19.9764 19.451 20.9882C18.2759 22 16.5526 22 13.1061 22H10.8939C7.44737 22 5.72409 22 4.54903 20.9882C3.37396 19.9764 3.13025 18.2827 2.64284 14.8952L2.36407 12.9579C1.98463 10.3208 1.79491 9.00229 2.33537 7.87495C2.87583 6.7476 4.02619 6.06234 6.32691 4.69181L7.71175 3.86687C9.80104 2.62229 10.8457 2 12 2C13.1543 2 14.199 2.62229 16.2882 3.86687L17.6731 4.69181C19.9738 6.06234 21.1242 6.7476 21.6646 7.87495" stroke="#000000" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>Dashboard</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                            </li>
+                            <li class="nav-item">
+                                {{-- <a class="nav-link" href="{{ route('user.cart.index') }}" tabindex="-1" aria-disabled="true"><svg viewBox="0 0 24 24" width="20px" height="20px" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3.86376 16.4552C3.00581 13.0234 2.57684 11.3075 3.47767 10.1538C4.3785 9 6.14721 9 9.68462 9H14.3153C17.8527 9 19.6214 9 20.5222 10.1538C21.4231 11.3075 20.9941 13.0234 20.1362 16.4552C19.5905 18.6379 19.3176 19.7292 18.5039 20.3646C17.6901 21 16.5652 21 14.3153 21H9.68462C7.43476 21 6.30983 21 5.49605 20.3646C4.68227 19.7292 4.40943 18.6379 3.86376 16.4552Z" stroke="#000000" stroke-width="1.5"></path> <path opacity="0.5" d="M19.5 9.5L18.7896 6.89465C18.5157 5.89005 18.3787 5.38775 18.0978 5.00946C17.818 4.63273 17.4378 4.34234 17.0008 4.17152C16.5619 4 16.0413 4 15 4M4.5 9.5L5.2104 6.89465C5.48432 5.89005 5.62128 5.38775 5.90221 5.00946C6.18199 4.63273 6.56216 4.34234 6.99922 4.17152C7.43808 4 7.95872 4 9 4" stroke="#000000" stroke-width="1.5"></path> <path d="M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4C15 4.55228 14.5523 5 14 5H10C9.44772 5 9 4.55228 9 4Z" stroke="#000000" stroke-width="1.5"></path> </g></svg><span id="cart-badge" class="badge bg-danger">0</span>Cart</a> --}}
                             </li>
                         </ul>
                         @if (Route::has('login'))
@@ -312,7 +359,7 @@
                             </div>
 
                             <div style="text-align: center;">
-                                <a href="#" class="btn btn-warning" style="display: inline-block; color: #ffffff;">
+                                <a href="{{ route('add_to_cart', $product->id) }}" class="btn btn-warning" style="display: inline-block; color: #ffffff;">
                                     <svg viewBox="0 0 24 24" fill="none"width="30px" height="30px" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M2 3L2.26491 3.0883C3.58495 3.52832 4.24497 3.74832 4.62248 4.2721C5 4.79587 5 5.49159 5 6.88304V9.5C5 12.3284 5 13.7426 5.87868 14.6213C6.75736 15.5 8.17157 15.5 11 15.5H13M19 15.5H17" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path> <path d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z" stroke="#ffffff" stroke-width="1.5"></path> <path d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z" stroke="#ffffff" stroke-width="1.5"></path> <path d="M5 6H8M5.5 13H16.0218C16.9812 13 17.4609 13 17.8366 12.7523C18.2123 12.5045 18.4013 12.0636 18.7792 11.1818L19.2078 10.1818C20.0173 8.29294 20.4221 7.34853 19.9775 6.67426C19.5328 6 18.5054 6 16.4504 6H12" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>  
                                     Add to Cart
                                 </a>
@@ -334,6 +381,19 @@
             }
         </style>
     </div>
+    <script>
+        var panier = []; 
+    
+        function ajouterAuPanier() {
+    
+            var nombreElementsPanier = panier.length;
+            document.getElementById("cart-badge").textContent = nombreElementsPanier;
+        }
+    
+        document.getElementById("bouton-ajouter-au-panier").addEventListener("click", function() {
+            ajouterAuPanier();
+        });
+    </script>
     <br>
     <br>
     <br>

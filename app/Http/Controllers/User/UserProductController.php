@@ -66,20 +66,6 @@ class UserProductController extends Controller
         return view('user.products.search_results', ['products' => $products]);
     }
 
-    // public function filter(Request $request)
-    // {
-    //     $query = $request->input('query');
-    //     $categoryId = $request->input('category');
-
-    //     $products = Product::where('name', 'like', '%' . $query . '%')
-    //         ->when($categoryId, function ($query) use ($categoryId) {
-    //             return $query->where('category_id', $categoryId);
-    //         })
-    //         ->get();
-
-    //     return view('user.products.search_results', compact('products'));
-    // }
-
     public function filter(Request $request)
     {
         $query = $request->input('query');
@@ -94,6 +80,55 @@ class UserProductController extends Controller
         $categories = Category::all();
 
         return view('user.products.index', compact('products', 'categories'));
+    }
+
+    public function cart()
+    {
+        $cart = session()->get('cart', []);
+
+        return view('user.cart.index', compact('cart'));
+    }
+    public function addToCart($id)
+    {
+        $product = Product::findOrFail($id);
+  
+        $cart = session()->get('cart', []);
+  
+        if(isset($cart[$id])) {
+            $cart[$id]['quantity']++;
+        }  else {
+            $cart[$id] = [
+                "product_name" => $product->name,
+                "image" => $product->image,
+                "price" => $product->price,
+                "quantity" => 1
+            ];
+        }
+  
+        session()->put('cart', $cart);
+        return redirect()->back()->with('success', 'Product add to cart successfully!');
+    }
+  
+    public function update(Request $request)
+    {
+        if($request->id && $request->quantity){
+            $cart = session()->get('cart');
+            $cart[$request->id]["quantity"] = $request->quantity;
+            session()->put('cart', $cart);
+            session()->flash('success', 'Cart successfully updated!');
+        }
+    }
+  
+    public function remove(Request $request)
+    {
+        if($request->id) {
+            $cart = session()->get('cart');
+            if(isset($cart[$request->id])) {
+                unset($cart[$request->id]);
+                session()->put('cart', $cart);
+            }
+            session()->flash('success', 'Product successfully removed!');
+        }
     }
 
 }

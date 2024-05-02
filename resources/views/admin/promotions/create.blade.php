@@ -126,50 +126,71 @@
     </div>
 
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Create Promotion</div>
-    
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('admin.dashboard.promotions.store') }}">
-                            @csrf
-    
-                            <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" name="name" id="name" class="form-control" required>
-                            </div>
-    
-                            <div class="form-group">
-                                <label for="product_id">Product ID</label>
-                                <input type="text" name="product_id" id="product_id" class="form-control" required>
-                            </div>
-    
-                            <div class="form-group">
-                                <label for="reduced_price">Reduced Price</label>
-                                <input type="text" name="reduced_price" id="reduced_price" class="form-control" required>
-                            </div>
-    
-                            <div class="form-group">
-                                <label for="percentage_reduction">Percentage Reduction</label>
-                                <input type="text" name="percentage_reduction" id="percentage_reduction" class="form-control" required>
-                            </div>
-    
-                            <div class="form-group">
-                                <label for="start_date">Start Date</label>
-                                <input type="date" name="start_date" id="start_date" class="form-control" required>
-                            </div>
-    
-                            <div class="form-group">
-                                <label for="end_date">End Date</label>
-                                <input type="date" name="end_date" id="end_date" class="form-control" required>
-                            </div>
-    
-                            <button type="submit" class="btn btn-primary">Create Promotion</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+    <form action="{{ route('admin.dashboard.promotions.store') }}" method="POST">
+        @csrf
+        <div class="form-group">
+            <label for="product_id">Select Product:</label>
+            <select name="product_id" id="product_id" class="form-control">
+                <option value="">Select Product</option>
+                @foreach($products as $product)
+                    <option value="{{ $product->id }}" data-price="{{ $product->price }}">{{ $product->name }}</option>
+                @endforeach
+            </select>
         </div>
-    </div>         
+        <div class="form-group">
+            <label for="initial_price">Initial Price:</label>
+            <input type="text" name="initial_price" id="initial_price" class="form-control" readonly>
+        </div>
+        <div class="form-group">
+            <label for="percentage_reduction">Percentage Reduction:</label>
+            <input type="number" name="percentage_reduction" id="percentage_reduction" class="form-control" min="0" max="100" step="0.01" required>
+            @error('percentage_reduction')
+                <span class="text-danger">{{ $message }}</span>
+            @enderror
+        </div>
+        <div class="form-group">
+            <label for="reduced_price">Reduced Price:</label>
+            <input type="text" name="reduced_price" id="reduced_price" class="form-control" readonly>
+        </div>
+        <div class="form-group">
+            <label for="start_date">Start Date:</label>
+            <input type="datetime-local" name="start_date" id="start_date" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="end_date">End Date:</label>
+            <input type="datetime-local" name="end_date" id="end_date" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Promotion</button>
+    </form>
+</div>
+    <script>
+        document.getElementById('product_id').addEventListener('change', function() {
+            var price = this.options[this.selectedIndex].getAttribute('data-price');
+            document.getElementById('initial_price').value = price;
+        });
+
+        // Fonction pour calculer le prix réduit en fonction du pourcentage de réduction
+        function calculateReducedPrice() {
+            let productPrice = parseFloat($('#product_id option:selected').data('price'));
+            let percentageReduction = parseFloat($('#percentage_reduction').val());
+            if (!isNaN(productPrice) && !isNaN(percentageReduction)) {
+                let reducedPrice = productPrice - (productPrice * (percentageReduction / 100));
+                $('#reduced_price').val(reducedPrice.toFixed(2));
+            } else {
+                $('#reduced_price').val('');
+            }
+        }
+
+        // Appeler la fonction de calcul lorsque le pourcentage de réduction change
+        $('#percentage_reduction').on('input', function() {
+            calculateReducedPrice();
+        });
+
+        // Appeler la fonction de calcul lorsque le produit sélectionné change
+        $('#product_id').on('change', function() {
+            calculateReducedPrice();
+        });
+    </script>
+    
+           
         

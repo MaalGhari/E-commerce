@@ -51,7 +51,7 @@
                 {{-- <a class="navbar-brand" href="{{ url('/') }}">
                 {{ config('app.name', 'Laravel') }}
             </a> --}}
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="">
                     <div>
                         <svg with="50" height="50" viewBox="0 0 1024 1024" class="icon" version="1.1"
                             xmlns="http://www.w3.org/2000/svg" fill="#000000">
@@ -156,7 +156,7 @@
             <div class="container d-flex justify-content-center">
                 <div class="row">
                     <div class="col">
-                        <form class="form-inline" action="/search" method="GET">
+                        <form class="form-inline" action="{{ route('admin.dashboard.admin.products.search') }}" method="GET">
                             @csrf
                             <div class="input-group">
                                 <input type="text" class="form-control" name="query" placeholder="Search...">
@@ -213,7 +213,12 @@
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $product->name }}</h5>
                                     <p class="card-text">{{ $product->description }}</p>
-                                    <p class="card-text">Price: ${{ $product->price }}</p>
+                                    {{-- <p class="card-text">Price: ${{ $product->price }}</p> --}}
+                                    @if(isset($product->discountedPrice))
+                                        <p class="card-text" style="font-size: 24px; color: red;">New Price: ${{ $product->discountedPrice }}</p>
+                                    @else
+                                        <p class="card-text">Price: ${{ $product->price }}</p>
+                                    @endif
                                     {{-- <div style="text-align: right;">
                                         <a href="{{ route('admin.dashboard.admin.products.update', ['id' => $product->id]) }}"><svg viewBox="0 0 24 24" width="25px" height="25px" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H9M15 5H17C18.1046 5 19 5.89543 19 7V9" stroke="#1e14a9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M14.902 20.3343L12.7153 20.7716L13.1526 18.585C13.1914 18.3914 13.2865 18.2136 13.4261 18.074L17.5 14L19.5 12L21.4869 13.9869L19.4869 15.9869L15.413 20.0608C15.2734 20.2004 15.0956 20.2956 14.902 20.3343Z" stroke="#1e14a9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#1e14a9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></a>
                                         <a href="{{ route('admin.dashboard.admin.products.destroy', ['id' => $product->id]) }}"><svg viewBox="0 0 24 24" width="25px" height="25px" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 11V17" stroke="#fc0303" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M14 11V17" stroke="#fc0303" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M4 7H20" stroke="#db1414" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M6 7H12H18V18C18 19.6569 16.6569 21 15 21H9C7.34315 21 6 19.6569 6 18V7Z" stroke="#fc0303" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#fc0303" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></a>
@@ -240,29 +245,30 @@
                 <p>No product is available at the moment.</p>
             @endif
 
-        <div class="d-flex justify-content-center">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination pagination-sm">
-                    @if ($products->onFirstPage())
-                        <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                    @else
-                        <li class="page-item"><a class="page-link" href="{{ $products->previousPageUrl() }}">Previous</a></li>
-                    @endif
-            
-                    @foreach ($products as $page)
-                        @if ($page->url)
-                            <li class="page-item {{ $page->isActive ? 'active' : '' }}"><a class="page-link" href="{{ $page->url }}">{{ $page->label }}</a></li>
+            <div class="d-flex justify-content-center">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination pagination-sm">
+                        @if ($products->onFirstPage())
+                            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                        @else
+                            <li class="page-item"><a class="page-link" href="{{ $products->previousPageUrl() }}">Previous</a></li>
                         @endif
-                    @endforeach
-            
-                    @if ($products->hasMorePages())
-                        <li class="page-item"><a class="page-link" href="{{ $products->nextPageUrl() }}">Next</a></li>
-                    @else
-                        <li class="page-item disabled"><span class="page-link">Next</span></li>
-                    @endif
-                </ul>
-            </nav>
-        </div> 
+                
+                        @foreach ($products as $page)
+                            @if ($page->url)
+                                <li class="page-item {{ $page->isActive ? 'active' : '' }}"><a class="page-link" href="{{ $page->url }}">{{ $page->label }}</a></li>
+                            @endif
+                        @endforeach
+                
+                        @if ($products->hasMorePages())
+                            <li class="page-item"><a class="page-link" href="{{ $products->nextPageUrl() }}">Next</a></li>
+                        @else
+                            <li class="page-item disabled"><span class="page-link">Next</span></li>
+                        @endif
+                    </ul>
+                </nav>
+            </div> 
+    </div>
     </div>
     <footer>
         @include('partials.footer')

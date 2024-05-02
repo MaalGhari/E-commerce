@@ -236,10 +236,10 @@
                     Product Stats
                 </div>
                 <div class="card-body py-5">
-                  <p class="card-text text-3xl font-bold">Products created this Month <span class="card-text text-info">{{ $productStats['productsCreatedThisMonth'] }}</span></p>
-                  <p class="card-text text-3xl font-bold">Products created last Week <span class="card-text text-info">{{ $productStats['productsCreatedLastWeek'] }}</span></p>
-                  <p class="card-text text-3xl font-bold">Products updated Today <span class="card-text text-info">{{ $productStats['productsUpdatedToday'] }}</span></p>
-                  <p class="card-text text-3xl font-bold">Products deleted this Month <span class="card-text text-info">{{ $productStats['productsDeletedThisMonth'] }}</span></p>
+                  <p class="card-text text-3xl font-bold">Products created this Month <span class="card-text text-danger">{{ $productStats['productsCreatedThisMonth'] }}</span></p>
+                  <p class="card-text text-3xl font-bold">Products created last Week <span class="card-text text-danger">{{ $productStats['productsCreatedLastWeek'] }}</span></p>
+                  <p class="card-text text-3xl font-bold">Products updated Today <span class="card-text text-danger">{{ $productStats['productsUpdatedToday'] }}</span></p>
+                  <p class="card-text text-3xl font-bold">Products deleted this Month <span class="card-text text-danger">{{ $productStats['productsDeletedThisMonth'] }}</span></p>
                 </div>                
             </div>
           </div>

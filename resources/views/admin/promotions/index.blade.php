@@ -139,11 +139,18 @@
                 </div>
             @endif
         </div>
+        <div class="mt-5" id="app">    
+            @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+        </div>
 
         <div class="container mt-5">
             <h1>List of promotions</h1>
             <br>
-            <a href="{{ route('admin.dashboard.promotions.create') }}" class="btn btn-primary mb-3">Add Promotions</a>
+            <a href="{{ route('admin.dashboard.promotions.create') }}" class="btn btn-primary mb-3">Create Promotions</a>
             <br>
             <table class="table">
                 <thead>

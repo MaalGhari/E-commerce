@@ -72,13 +72,16 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav"> 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('welcome') }}">Dashboard</a>
+                            <a class="nav-link" href="{{ route('welcome') }}"><svg viewBox="0 0 24 24" width="20px" height="20px" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15 18H9" stroke="#000000" stroke-width="1.5" stroke-linecap="round"></path> <path d="M21.6359 12.9579L21.3572 14.8952C20.8697 18.2827 20.626 19.9764 19.451 20.9882C18.2759 22 16.5526 22 13.1061 22H10.8939C7.44737 22 5.72409 22 4.54903 20.9882C3.37396 19.9764 3.13025 18.2827 2.64284 14.8952L2.36407 12.9579C1.98463 10.3208 1.79491 9.00229 2.33537 7.87495C2.87583 6.7476 4.02619 6.06234 6.32691 4.69181L7.71175 3.86687C9.80104 2.62229 10.8457 2 12 2C13.1543 2 14.199 2.62229 16.2882 3.86687L17.6731 4.69181C19.9738 6.06234 21.1242 6.7476 21.6646 7.87495" stroke="#000000" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>Dashboard</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                         </li>
+                        <li class="nav-item">
+                            {{-- <a class="nav-link" href="{{ route('user.cart.index') }}" tabindex="-1" aria-disabled="true"><svg viewBox="0 0 24 24" width="20px" height="20px" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3.86376 16.4552C3.00581 13.0234 2.57684 11.3075 3.47767 10.1538C4.3785 9 6.14721 9 9.68462 9H14.3153C17.8527 9 19.6214 9 20.5222 10.1538C21.4231 11.3075 20.9941 13.0234 20.1362 16.4552C19.5905 18.6379 19.3176 19.7292 18.5039 20.3646C17.6901 21 16.5652 21 14.3153 21H9.68462C7.43476 21 6.30983 21 5.49605 20.3646C4.68227 19.7292 4.40943 18.6379 3.86376 16.4552Z" stroke="#000000" stroke-width="1.5"></path> <path opacity="0.5" d="M19.5 9.5L18.7896 6.89465C18.5157 5.89005 18.3787 5.38775 18.0978 5.00946C17.818 4.63273 17.4378 4.34234 17.0008 4.17152C16.5619 4 16.0413 4 15 4M4.5 9.5L5.2104 6.89465C5.48432 5.89005 5.62128 5.38775 5.90221 5.00946C6.18199 4.63273 6.56216 4.34234 6.99922 4.17152C7.43808 4 7.95872 4 9 4" stroke="#000000" stroke-width="1.5"></path> <path d="M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4C15 4.55228 14.5523 5 14 5H10C9.44772 5 9 4.55228 9 4Z" stroke="#000000" stroke-width="1.5"></path> </g></svg><span id="cart-badge" class="badge bg-danger">0</span>Cart</a> --}}
+                        </li>
                     </ul>
-                    @if (Route::has('login'))
+                    {{-- @if (Route::has('login'))
                         @auth
                             <ul class="navbar-nav mr-auto mb-4"> 
                                 <li class="nav-item">
@@ -97,9 +100,28 @@
                                 @endif
                             </ul>
                         @endauth
-                    @endif
+                    @endif --}}
                 </div>
-                
+                @if (Route::has('login'))
+                    @auth
+                        <ul class="navbar-nav mr-auto mb-4"> 
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url('/home') }}">Home</a>
+                            </li>
+                        </ul>
+                        @else
+                        <ul class="navbar-nav jus mt-3"> 
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-primary px-4 py-2 custom-margin-right" href="{{ route('login') }}">Login</a>
+                            </li>
+                            @if (Route::has('register'))
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-success px-4 py-2" href="{{ route('register') }}">Register</a>
+                                </li>
+                            @endif
+                        </ul>
+                    @endauth
+                @endif    
             </div>
         </nav>
     </div>
@@ -197,6 +219,19 @@
             </nav>
         </div>
     </div>
+    <script>
+        var panier = []; 
+    
+        function ajouterAuPanier() {
+    
+            var nombreElementsPanier = panier.length;
+            document.getElementById("cart-badge").textContent = nombreElementsPanier;
+        }
+    
+        document.getElementById("bouton-ajouter-au-panier").addEventListener("click", function() {
+            ajouterAuPanier();
+        });
+    </script>
         <footer>
             @include('partials.footer')
         </footer>

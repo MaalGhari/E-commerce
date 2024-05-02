@@ -38,14 +38,18 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    // public function promotions()
+    // {
+    //     return $this->belongsTo(Promotion::class);
+    // }
     public function promotions()
     {
-        return $this->belongsTo(Promotion::class);
+        return $this->hasMany(Promotion::class);
     }
 
-    public function products(){
-        return $this->hasMany(Product::class);
-    }
+    // public function products(){
+    //     return $this->hasMany(Product::class);
+    // }
 
 
 }
