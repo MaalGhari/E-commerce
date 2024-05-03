@@ -16,12 +16,13 @@ class StripeController extends Controller
  
         foreach (session('cart') as $id => $details) {
  
-            $product_name = $details['name'];
+            $product_name = $details['product_name'];
             $total = $details['price'];
             $quantity = $details['quantity'];
  
             $two0 = "00";
-            $unit_amount = "$total$two0";
+            // $unit_amount = "$total$two0";
+            $unit_amount = (int) round($total * 100);
  
             $productItems[] = [
                 'price_data' => [
@@ -42,7 +43,7 @@ class StripeController extends Controller
             'metadata'              => [
                 'user_id' => "0001"
             ],
-            'customer_email' => "cairocoders-ednalan@gmail.com", //$user->email,
+            'customer_email' => "lemghari99amal@gmail.com", //$user->email,
             'success_url' => route('success'),
             'cancel_url'  => route('cancel'),
         ]);
@@ -57,6 +58,6 @@ class StripeController extends Controller
  
     public function cancel()
     {
-        return view('cancel');
+        return view('user.cancel.index');
     }
 }

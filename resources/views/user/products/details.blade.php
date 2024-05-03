@@ -13,6 +13,8 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+
 
     <!-- Scripts -->
     @yield('js')
@@ -146,7 +148,7 @@
                                     <div class="dropdown">
                      
                                         <button id="dLabel" type="button" class="btn btn-primary" data-bs-toggle="dropdown">
-                                            <i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge bg-danger">{{ count((array) session('cart')) }}</span>
+                                            <i class="fa fa-shopping-cart" aria-hidden="true"><svg fill="#ffffff" height="30px" width="20px"  version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 91.692 91.692" xml:space="preserve" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <g> <path d="M72.332,13.083c-2.387,0-4.402,0.672-5.611,1.377l1.144,3.662c0.874-0.605,2.217-1.008,3.325-1.008 c1.68,0.066,2.453,0.84,2.453,2.016c0,1.143-0.875,2.219-1.949,3.494c-1.512,1.814-2.083,3.561-1.98,5.273l0.033,0.875h4.467 v-0.604c-0.033-1.512,0.471-2.822,1.715-4.201c1.275-1.408,2.854-3.09,2.854-5.643C78.782,15.536,76.766,13.083,72.332,13.083z"></path> <path d="M71.861,30.351c-1.747,0-2.99,1.277-2.99,3.057c0,1.746,1.21,3.057,2.99,3.057c1.814,0,3.023-1.311,3.023-3.057 C74.852,31.628,73.676,30.351,71.861,30.351z"></path> </g> <path d="M71.942,5.329c-9.074,0-16.718,6.156-19.021,14.508H45.23h-4.738H16.569l-1.395-6.892L1.246,10.62L0,18.089l8.785,1.463 l9.32,44.964l-4.092,13.011h5.658c-0.32,0.772-0.5,1.627-0.5,2.522c0,3.486,2.656,6.313,5.934,6.313 c3.278,0,5.932-2.826,5.932-6.313c0-0.896-0.18-1.75-0.496-2.522H61.83c-0.318,0.772-0.496,1.627-0.496,2.522 c0,3.486,2.654,6.313,5.932,6.313c3.275,0,5.933-2.826,5.933-6.313c0-0.896-0.181-1.75-0.498-2.522h5.017v-7.57H24.332l0.766-2.43 l53.035-22.192v-1.516c7.863-2.604,13.56-10.014,13.56-18.74C91.692,14.189,82.832,5.329,71.942,5.329z M71.942,38.829 c-7.582,0-13.75-6.168-13.75-13.75s6.168-13.75,13.75-13.75s13.75,6.168,13.75,13.75S79.524,38.829,71.942,38.829z"></path> </g> </g> </g></svg></i> Cart <span class="badge bg-danger">{{ count((array) session('cart')) }}</span>
                                         </button>
                          
                                         <div class="dropdown-menu" aria-labelledby="dLabel">
@@ -228,6 +230,16 @@
     
 
         <div class="container">
+            <div class="container">
+    
+                @if(session('success'))
+                    <div class="alert alert-success">
+                      {{ session('success') }}
+                    </div> 
+                @endif
+                
+                @yield('content')
+            </div>
             <div class="row justify-content-center mt-5">
                 <div class="col-md-6">
                     <div class="card mb-6">
@@ -381,7 +393,7 @@
             }
         </style>
     </div>
-    <script>
+    {{-- <script>
         var panier = []; 
     
         function ajouterAuPanier() {
@@ -393,7 +405,7 @@
         document.getElementById("bouton-ajouter-au-panier").addEventListener("click", function() {
             ajouterAuPanier();
         });
-    </script>
+    </script> --}}
     <br>
     <br>
     <br>

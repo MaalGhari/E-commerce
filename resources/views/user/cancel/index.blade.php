@@ -1,3 +1,12 @@
+{{-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Shopping Cart add to cart with Stripe Payment Gateway</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+</head> --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -193,119 +202,19 @@
     <br />
 <body>
     <div class="container">
-    
-        @if(session('success'))
-            <div class="alert alert-success">
-              {{ session('success') }}
-            </div> 
-        @endif
-        
-        @yield('content')
+        <div class='row'>
+            <h1>Building a Shopping Cart with Stripe Payment Integration</h1>
+            <div class='col-md-12'>
+                <div class="card">
+                    <div class="card-header">
+                    Cancel
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ url('/products') }}" class="btn btn-info"> <i class="fa fa-arrow-left"><svg fill="#ffffff" height="20px" width="20px"  version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 487.5 487.5" xml:space="preserve" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M190.688,162.986l2.792-24.271c98.879,11.378,133.738,42.815,133.738,42.815S325.707,61.253,204.005,47.25l2.792-24.27 L92.775,80.792L190.688,162.986z"></path> <polygon points="63.348,159.52 0,159.52 0,197.02 39.152,197.02 62.902,249.52 487.5,249.52 487.5,212.02 87.098,212.02 "></polygon> <rect x="92.5" y="274.52" width="375" height="37.5"></rect> <rect x="115" y="337.02" width="330" height="37.5"></rect> <circle cx="158.75" cy="428.27" r="36.25"></circle> <circle cx="403.75" cy="428.27" r="36.25"></circle> </g> </g> </g></svg></i> Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <section class="container">
-        <table id="cart" class="table table-hover table-condensed">
-            <thead>
-                <tr>
-                    <th style="width:50%">Product</th>
-                    <th style="width:10%">Price</th>
-                    <th style="width:8%">Quantity</th>
-                    <th style="width:22%" class="text-center">Subtotal</th>
-                    <th style="width:10%"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @php $total = 0 @endphp
-                @if(!empty($cart)) <!-- Vérifiez si le panier n'est pas vide -->
-                @foreach($cart as $id => $details)
-                        @php $total += $details['price'] * $details['quantity'] @endphp
-                        <tr data-id="{{ $id }}">
-                            <td data-th="Product">
-                                <div class="row">
-                                    <div class="col-sm-3 hidden-xs">
-                                        {{-- <img src="{{ asset('images') }}/{{ $details['image'] }}" width="100" height="100" class="img-responsive"/> --}}
-                                        @if(isset($details['image']))
-                                            <img src="{{ asset('images') }}/{{ $details['image'] }}" width="100" height="100" class="img-responsive"/>
-                                        @endif
-                                    </div>
-                                    <div class="col-sm-9">
-                                        <h4 class="nomargin">{{ $details['product_name'] }}</h4>
-                                    </div>
-                                </div>
-                            </td>
-                            <td data-th="Price">${{ $details['price'] }}</td>
-                            <td data-th="Quantity">
-                                <input type="number" value="{{ $details['quantity'] }}" class="form-control quantity cart_update" min="1" />
-                            </td>
-                            <td data-th="Subtotal" class="text-center">${{ $details['price'] * $details['quantity'] }}</td>
-                            <td class="actions" data-th="">
-                                <button class="btn btn-danger btn-sm cart_remove"><i class="fa fa-trash-o"><svg viewBox="0 0 24 24" height="20px" width="20px"  fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 12V17" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M14 12V17" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M4 7H20" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></i> Delete</button>
-                            </td>
-                        </tr>
-                    @endforeach
-                @endif
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="5" style="text-align:right;"><h3><strong>Total ${{ $total }}</strong></h3></td>
-                </tr>
-                <tr>
-                    <td colspan="5" style="text-align:right;">
-                        <form action="/session" method="POST">
-                        <a href="{{ url('/products') }}" class="btn btn-danger"> <i class="fa fa-arrow-left"><svg fill="#ffffff" height="20px" width="20px"  version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 487.5 487.5" xml:space="preserve" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M190.688,162.986l2.792-24.271c98.879,11.378,133.738,42.815,133.738,42.815S325.707,61.253,204.005,47.25l2.792-24.27 L92.775,80.792L190.688,162.986z"></path> <polygon points="63.348,159.52 0,159.52 0,197.02 39.152,197.02 62.902,249.52 487.5,249.52 487.5,212.02 87.098,212.02 "></polygon> <rect x="92.5" y="274.52" width="375" height="37.5"></rect> <rect x="115" y="337.02" width="330" height="37.5"></rect> <circle cx="158.75" cy="428.27" r="36.25"></circle> <circle cx="403.75" cy="428.27" r="36.25"></circle> </g> </g> </g></svg></i> Continue Shopping</a>
-                        <input type="hidden" name="_token" value="{{csrf_token()}}">
-                        <button class="btn btn-success" type="submit" id="checkout-live-button"><i class="fa fa-money"><svg viewBox="0 0 24 24" height="20px" width="20px"  fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g opacity="0.4"> <path d="M9.5 13.7502C9.5 14.7202 10.25 15.5002 11.17 15.5002H13.05C13.85 15.5002 14.5 14.8202 14.5 13.9702C14.5 13.0602 14.1 12.7302 13.51 12.5202L10.5 11.4702C9.91 11.2602 9.51001 10.9402 9.51001 10.0202C9.51001 9.18023 10.16 8.49023 10.96 8.49023H12.84C13.76 8.49023 14.51 9.27023 14.51 10.2402" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M12 7.5V16.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g> <path d="M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M22 6V2H18" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M17 7L22 2" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></i> Checkout</button>
-                        </form>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </section>
-            
-        @section('scripts')
-        <script type="text/javascript">
-            
-            $(".cart_update").change(function (e) {
-                e.preventDefault();
-            
-                var ele = $(this);
-            
-                $.ajax({
-                    url: '{{ route('update_cart') }}',
-                    method: "patch",
-                    data: {
-                        _token: '{{ csrf_token() }}', 
-                        id: ele.parents("tr").attr("data-id"), 
-                        quantity: ele.parents("tr").find(".quantity").val()
-                    },
-                    success: function (response) {
-                       window.location.reload();
-                    }
-                });
-            });
-            
-            $(".cart_remove").click(function (e) {
-                e.preventDefault();
-            
-                var ele = $(this);
-            
-                if(confirm("Do you really want to remove?")) {
-                    $.ajax({
-                        url: '{{ route('remove_from_cart') }}',
-                        method: "DELETE",
-                        data: {
-                            _token: '{{ csrf_token() }}', 
-                            id: ele.parents("tr").attr("data-id")
-                        },
-                        success: function (response) {
-                            window.location.reload();
-                        }
-                    });
-                }
-            });
-            
-        </script>
 </body>
-
-<footer>
-    @include('partials.footer')
-</footer>
+</html>
