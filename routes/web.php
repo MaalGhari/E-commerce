@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\User\EmailController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\StripeController;
 use App\Http\Controllers\User\UserCartController;
@@ -25,6 +26,8 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
+Route::get('/email', [EmailController::class, 'create']);
+Route::post('/email', [EmailController::class, 'sendEmail'])->name('send.email');
 
 Route::post('/session', [StripeController::class, 'session'])->name('session');
 Route::get('/success', [StripeController::class, 'success'])->name('success');
